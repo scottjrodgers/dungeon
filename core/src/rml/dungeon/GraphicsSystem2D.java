@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.Vector;
 
-public class GraphicsSystem2D {
+class GraphicsSystem2D {
     private EntityManager entityMgr;
     private TextureManager textureMgr;
     private SpriteBatch batch;
-    int tx_dirt, tx_wall;
+    private int tx_dirt, tx_wall;
 
 
-    public GraphicsSystem2D(EntityManager em, TextureManager tm){
+    GraphicsSystem2D(EntityManager em, TextureManager tm){
         entityMgr = em;
         textureMgr = tm;
         batch = new SpriteBatch();
@@ -20,7 +20,7 @@ public class GraphicsSystem2D {
 
     }
 
-    public void render(int en_hero, Level level){
+    void render(int en_hero, GameMap level){
         Entity eh = entityMgr.get(en_hero);
         int px = (int)eh.x;
         int py = (int)eh.y;
@@ -31,10 +31,10 @@ public class GraphicsSystem2D {
                 int y = 512 + r * 64 - py;
                 short t = level.tiles[r][c];
                 switch(t){
-                    case Level.dirt:
+                    case GameMap.dirt:
                         batch.draw(textureMgr.get(tx_dirt), x,y);
                         break;
-                    case Level.wall:
+                    case GameMap.wall:
                         batch.draw(textureMgr.get(tx_wall), x,y);
                         break;
                 }
@@ -42,13 +42,11 @@ public class GraphicsSystem2D {
         }
 
         Vector<Entity> elist = entityMgr.get_entities();
-        int ecount = elist.size();
-        for(int i=0; i<ecount; i++){
-            Entity ent = elist.get(i);
-            if(ent.txtID >= 0) {
+        for (Entity ent : elist) {
+            if (ent.txtID >= 0) {
                 batch.draw(textureMgr.get(ent.txtID),
-                        640 + ent.x - px,
-                        512 + ent.y - py);
+                        640 + (int)ent.x - px - 32,
+                        512 + (int)ent.y - py - 32);  // TODO: make this be a non-hardcoded 1/2 width
             }
         }
         batch.end();

@@ -13,15 +13,15 @@ public class DungeonGame extends Game {
         showTopWorld();
     }
 
-    public EntityManager entityManager(){
+    EntityManager entityManager(){
         return entityMgr;
     }
 
-    public TextureManager textureManager(){
+    TextureManager textureManager(){
         return textureMgr;
     }
 
-    public void showTopWorld(){
+    private void showTopWorld(){
         setScreen(new TopWorldScreen(this));
     }
 }

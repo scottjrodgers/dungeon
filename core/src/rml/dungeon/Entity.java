@@ -1,9 +1,10 @@
 package rml.dungeon;
 
-public class Entity {
-    public int EID;
-    public float x, y;
-    public float theta;
-    public int txtID = -1;
-    public int bbr_x = 0, bbr_y = 0;
+class Entity {
+//    int EID;
+    float x, y;
+    float theta;
+    int txtID = -1;
+    //int bbr_x = -1, bbr_y = -1;
+    float radius = -1;
 }

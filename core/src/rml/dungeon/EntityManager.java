@@ -5,29 +5,28 @@
 
 package rml.dungeon;
 
-import rml.dungeon.Entity;
-
 import java.util.Collection;
 import java.util.Vector;
 import java.util.Stack;
 
-public class EntityManager {
+class EntityManager {
     private int max_EID = 0;
     private Vector<Entity> entities;
     private Stack<Integer> freelist;
     private ComponentMap<VelocityComp> velocity_comp;
 
-    public EntityManager(){
+    EntityManager(){
         entities = new Vector<Entity>();
         freelist = new Stack<Integer>();
+        velocity_comp = new ComponentMap<VelocityComp>();
         ComponentMap<VelocityComp> velocity_comp = new ComponentMap<VelocityComp>();
     }
 
     /*=============================================================*
      * Entity Functions
      *=============================================================*/
-    public int create_entity(float x, float y, float theta){
-        int eid = 0;
+    int create_entity(float x, float y, float theta){
+        int eid;
         if(freelist.empty()){
             eid = max_EID;
             max_EID += 1;
@@ -40,30 +39,30 @@ public class EntityManager {
         return eid;
     }
 
-    public Entity get(int EID){
+    Entity get(int EID){
         return entities.get(EID);
     }
 
-    public void set_pos(int eid, float x, float y, float theta){
+    void set_pos(int eid, float x, float y, float theta){
         Entity e = get(eid);
         e.x = x;
         e.y = y;
         e.theta = theta;
     }
 
-    public void set_texture(int EID, int txtID){
+    void set_texture(int EID, int txtID){
         entities.get(EID).txtID = txtID;
     }
 
     // TODO: add bounding-box setter / getter
 
-    public void delete(int EID){
+    void delete(int EID){
         set_pos(EID, 0,0,0);
         set_texture(EID, -1);
         freelist.push(EID);
     }
 
-    public Vector<Entity> get_entities(){
+    Vector<Entity> get_entities(){
         return entities;
     }
 
@@ -71,20 +70,29 @@ public class EntityManager {
     /*=============================================================*
      * Velocity Component Functions
      *=============================================================*/
-    public void set_velocity(int EID, float vx, float vy, float vth){
+    void set_velocity(int EID, float vx, float vy, float vth){
         if(velocity_comp.exists(EID)){
             VelocityComp v = velocity_comp.get(EID);
+            v.EID = EID;
             v.vx = vx;
             v.vy = vy;
             v.vth = vth;
         }
+        else{
+            VelocityComp v = new VelocityComp();
+            v.EID = EID;
+            v.vx = vx;
+            v.vy = vy;
+            v.vth = vth;
+            velocity_comp.add(EID, v);
+        }
     }
 
-    public VelocityComp get_velocity(int EID){
+    VelocityComp get_velocity(int EID){
         return velocity_comp.get(EID);
     }
 
-    public Collection<VelocityComp> get_all_velocities(){
+    Collection<VelocityComp> get_all_velocities(){
         return velocity_comp.entries();
     }
 }

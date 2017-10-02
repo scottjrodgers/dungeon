@@ -5,18 +5,18 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.Vector;
 import java.util.HashMap;
 
-public class TextureManager {
+class TextureManager {
 
     private int max_ID = 0;
     private Vector<Texture> textures;
     private HashMap<String, Integer> index;
 
-    public TextureManager(){
+    TextureManager(){
         textures = new Vector<Texture>();
         index = new HashMap<String, Integer>();
     }
 
-    public int load(String name, String fname){
+    int load(String name, String fname){
         if(index.containsKey(name)) return index.get(name);
         else{
             int ID = max_ID;
@@ -28,11 +28,11 @@ public class TextureManager {
         }
     }
 
-    public Texture get(int ID){
+    Texture get(int ID){
         return textures.get(ID);
     }
 
-    public Texture get(String name){
+    Texture get(String name){
         int ID = index.get(name);
         return get(ID);
     }
