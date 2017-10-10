@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TopWorldScreen extends InputAdapter implements Screen {
-    EntityManager entityMgr;
     private static Map<String, Boolean> keys;
     private static String UP = "U";
     private static String DOWN = "D";
@@ -18,19 +17,17 @@ public class TopWorldScreen extends InputAdapter implements Screen {
     private int en_hero;
 
     //private DungeonGame game;
-    private GameMap level;
+    private GameMap gameMap;
     private GraphicsSystem2D graphics;
     private PhysicsSystem physics;
 
 
     TopWorldScreen(DungeonGame game){
         //this.game = game;
-        level = new GameMap(); // TODO: extract out the level to a separate data structure / system
+        gameMap = new GameMap(); // TODO: extract out the level to a separate data structure / system
 
-        TextureManager textureMgr = game.textureManager();
-        entityMgr = game.entityManager();
-        graphics = new GraphicsSystem2D(entityMgr, textureMgr);
-        physics = new PhysicsSystem(entityMgr, level);
+        graphics = new GraphicsSystem2D(gameMap);
+        physics = new PhysicsSystem(gameMap);
 
         keys = new HashMap<String, Boolean>();
         keys.put(LEFT, false);
@@ -39,13 +36,14 @@ public class TopWorldScreen extends InputAdapter implements Screen {
         keys.put(DOWN, false);
 
         // Textures
-        int tx_hero = textureMgr.load("hero","smiley.png");
+        int tx_hero = gameMap.textureMgr.load("hero","smiley.png");
 
         // Entities
-        en_hero = entityMgr.create_entity(level.start_x * 64f + 32f, level.start_y * 64f + 32f, 0f);
-        entityMgr.get(en_hero).txtID = tx_hero;
-        entityMgr.get(en_hero).radius = 31;
+        en_hero = gameMap.entityMgr.create_entity(gameMap.start_x * 64f + 32f, gameMap.start_y * 64f + 32f, 0f);
+        gameMap.entityMgr.get(en_hero).txtID = tx_hero;
+        gameMap.entityMgr.get(en_hero).radius = 31;
     }
+
 
     @Override
     public void show(){
@@ -55,42 +53,48 @@ public class TopWorldScreen extends InputAdapter implements Screen {
         Gdx.input.setInputProcessor(this);
     }
 
+
     @Override
     public void resize(int width, int height) {
 //        float w = Gdx.graphics.getWidth();
 //        float h = Gdx.graphics.getHeight();
     }
 
+
     @Override
     public void hide(){
 
     }
+
 
     @Override
     public void pause(){
 
     }
 
+
     @Override
     public void resume(){
 
     }
 
+
     private void handle_input() {
         int dx = 0;
         int dy = 0;
+        int spd = 512;
         if (keys.get(UP))
-            dy += 256;
+            dy += spd;
         if (keys.get(DOWN))
-            dy -= 256;
+            dy -= spd;
         if (keys.get(LEFT))
-            dx -= 256;
+            dx -= spd;
         if (keys.get(RIGHT))
-            dx += 256;
+            dx += spd;
 
-        //Entity e = entityMgr.get(en_hero);
-        entityMgr.set_velocity(en_hero, dx, dy, 0);
+        gameMap.entityMgr.set_velocity(en_hero, dx, dy, 0);
     }
+
 
     @Override
     public void render (float delta) {
@@ -100,8 +104,9 @@ public class TopWorldScreen extends InputAdapter implements Screen {
         this.handle_input();
 
         physics.update(delta);
-        graphics.render(en_hero, level);
+        graphics.render(en_hero);
     }
+
 
     @Override
     public boolean keyDown(int keycode) {
@@ -116,6 +121,7 @@ public class TopWorldScreen extends InputAdapter implements Screen {
 
         return false;
     }
+
 
     @Override
     public boolean keyUp(int keycode) {
@@ -133,6 +139,7 @@ public class TopWorldScreen extends InputAdapter implements Screen {
             Gdx.app.exit();
         return false;
     }
+
 
     @Override
     public void dispose(){
